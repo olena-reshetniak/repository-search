@@ -12,4 +12,6 @@ abstract class ColorResources {
   static Color get textPlaceholderColor => const Color(0xFFBFBFBF);
 
   static Color get layerColor => const Color(0xFFF2F2F2);
+
+  static Color get borderColor => const Color(0x20211814);
 }
