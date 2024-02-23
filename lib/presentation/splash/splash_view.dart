@@ -60,7 +60,7 @@ class _SplashViewState extends State<SplashView> {
   }
 
   void _openHomeScreen() {
-    Navigator.pushNamed(
+    Navigator.pushReplacementNamed(
       context,
       HomeScreen.routeName,
     );

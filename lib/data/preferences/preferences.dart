@@ -20,5 +20,23 @@ class Preferences {
     return '';
   }
 
+  Future<void> setFavoriteList(String favoriteList) async {
+    var prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString(_favoriteList, favoriteList);
+  }
+
+  Future<String> getFavoriteList() async {
+    var prefs = await SharedPreferences.getInstance();
+    var favoriteList = prefs.getString(_favoriteList);
+
+    if (favoriteList != null) {
+      return favoriteList;
+    }
+
+    return '';
+  }
+
   static const String _searchHistory = 'search_history';
+  static const String _favoriteList = 'favorite_list';
 }

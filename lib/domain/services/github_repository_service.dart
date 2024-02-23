@@ -8,9 +8,13 @@ abstract class GitHubRepositoryService {
 
   Future<Either<Exception, List<Repository>>> getSearchHistory();
 
-  Future<Either<Exception, void>> updateFavoriteRepositoriesList(
+  Future<void> addFavoriteItem(
     Repository repository,
   );
 
-  Future<Either<Exception, List<Repository>>> getFavoriteRepos();
+  Future<void> deleteFavoriteItem(
+    Repository repository,
+  );
+
+  Future<Either<Exception, List<Repository>>> getFavoriteRepositories();
 }

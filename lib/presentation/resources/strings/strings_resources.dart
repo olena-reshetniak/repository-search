@@ -3,6 +3,8 @@ abstract class StringsResources {
 
   static String get homeScreenAppBarTitle => "Github repos list";
 
+  static String get favoriteScreenScreenAppBarTitle => "Favorite repos list";
+
   static String get search => "Search";
 
   static String get searchHistory => "Search History";
@@ -14,4 +16,7 @@ abstract class StringsResources {
 
   static String get emptyListSearchResult =>
       "Nothing was find for your search.\nPlease check the spelling";
+
+  static String get emptyFavoriteList =>
+      "You have no favorites.\nClick on star while searching to add first favorite";
 }

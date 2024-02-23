@@ -31,4 +31,14 @@ class RepositoryModelView {
       isFavorite: repository.isFavorite,
     );
   }
+
+  static Repository mapperToRepository(
+    RepositoryModelView repository,
+  ) {
+    return Repository(
+      id: repository.id,
+      name: repository.name,
+      isFavorite: repository.isFavorite,
+    );
+  }
 }

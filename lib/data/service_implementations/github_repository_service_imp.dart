@@ -24,6 +24,16 @@ class GitHubRepositoryServiceImp extends GitHubRepositoryService {
   ) async {
     final result = await repoApiService.searchRepositories(searchValue);
 
+    final favoriteResult = await preferences.getFavoriteList();
+
+    List<Repository> favoriteRepositories = [];
+
+    if (favoriteResult.isNotEmpty) {
+      favoriteRepositories = Repository.mapperFavoriteRepositories(
+        SearchRepositoriesResponse.fromJson(json.decode(favoriteResult)),
+      );
+    }
+
     return result.fold(
       (error) {
         return Left(error);
@@ -34,6 +44,7 @@ class GitHubRepositoryServiceImp extends GitHubRepositoryService {
         return Right(
           Repository.mapperFromSearchRepositoriesResponse(
             response,
+            favoriteRepositories,
           ),
         );
       },
@@ -45,6 +56,16 @@ class GitHubRepositoryServiceImp extends GitHubRepositoryService {
     try {
       final result = await preferences.getSearchHistory();
 
+      final favoriteResult = await preferences.getFavoriteList();
+
+      List<Repository> favoriteRepositories = [];
+
+      if (favoriteResult.isNotEmpty) {
+        favoriteRepositories = Repository.mapperFavoriteRepositories(
+          SearchRepositoriesResponse.fromJson(json.decode(favoriteResult)),
+        );
+      }
+
       if (result.isNotEmpty) {
         final repositories =
             SearchRepositoriesResponse.fromJson(json.decode(result));
@@ -52,6 +73,7 @@ class GitHubRepositoryServiceImp extends GitHubRepositoryService {
         return Right(
           Repository.mapperFromSearchRepositoriesResponse(
             repositories,
+            favoriteRepositories,
           ),
         );
       } else {
@@ -63,16 +85,74 @@ class GitHubRepositoryServiceImp extends GitHubRepositoryService {
   }
 
   @override
-  Future<Either<Exception, void>> updateFavoriteRepositoriesList(
-    Repository repository,
-  ) async {
-    // TODO: implement updateFavoriteRepositoriesList
-    throw UnimplementedError();
+  Future<void> addFavoriteItem(Repository repository) async {
+    final result = await preferences.getFavoriteList();
+
+    List<Repository> favoriteRepositories = [];
+
+    if (result.isNotEmpty) {
+      favoriteRepositories = Repository.mapperFavoriteRepositories(
+        SearchRepositoriesResponse.fromJson(json.decode(result)),
+      );
+    }
+
+    favoriteRepositories.add(repository);
+
+    preferences.setFavoriteList(
+      json.encode(
+        Repository.mapperToSearchRepositoriesResponse(
+          favoriteRepositories,
+        ).toJson(),
+      ),
+    );
   }
 
   @override
-  Future<Either<Exception, List<Repository>>> getFavoriteRepos() async {
-    // TODO: implement getFavoriteRepos
-    throw UnimplementedError();
+  Future<void> deleteFavoriteItem(Repository repository) async {
+    final result = await preferences.getFavoriteList();
+
+    List<Repository> newFavoriteRepositories = [];
+
+    if (result.isNotEmpty) {
+      final favoriteRepositories = Repository.mapperFavoriteRepositories(
+        SearchRepositoriesResponse.fromJson(json.decode(result)),
+      );
+
+      for (var item in favoriteRepositories) {
+        if (item.id != repository.id) {
+          newFavoriteRepositories.add(item);
+        }
+      }
+    }
+
+    preferences.setFavoriteList(
+      json.encode(
+        Repository.mapperToSearchRepositoriesResponse(
+          newFavoriteRepositories,
+        ).toJson(),
+      ),
+    );
+  }
+
+  @override
+  Future<Either<Exception, List<Repository>>> getFavoriteRepositories() async {
+    try {
+      final result = await preferences.getFavoriteList();
+
+      if (result.isNotEmpty) {
+        final repositories =
+            SearchRepositoriesResponse.fromJson(json.decode(result));
+
+        return Right(
+          Repository.mapperFavoriteRepositories(
+            repositories,
+          ),
+        );
+      } else {
+        return const Right([]);
+      }
+    } on Exception catch (exception) {
+      return Left(exception);
+    }
   }
 }
