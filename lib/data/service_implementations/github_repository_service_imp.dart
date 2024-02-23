@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import 'package:repository_search/data/api/github_repository_api.dart.dart';
+import 'package:repository_search/data/api/github_repository_api.dart';
 import 'package:repository_search/data/preferences/preferences.dart';
 import 'package:repository_search/data/response/search_repositories_response.dart';
 import 'package:repository_search/domain/entity/repository.dart';
