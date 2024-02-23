@@ -2,6 +2,8 @@
 
 Test task for the vacancy Flutter Developer
 
+Before starting the application, open the file "lib/data/api/github_repository_api.dart" and enter your GitHub access tokens to field "token".
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
