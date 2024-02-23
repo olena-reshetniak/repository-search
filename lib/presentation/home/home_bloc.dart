@@ -21,6 +21,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }) : super(HomeState.initial()) {
     on<_ShowSearchHistory>(_onShowSearchHistory);
     on<_Search>(_onSearch);
+    on<_UpdateFavoriteList>(_onUpdateFavoriteList);
   }
 
   Future<void> _onShowSearchHistory(
@@ -75,6 +76,35 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     } else {
       add(
         const HomeEvent.showSearchHistory(),
+      );
+    }
+  }
+
+  Future<void> _onUpdateFavoriteList(
+    _UpdateFavoriteList event,
+    Emitter<HomeState> emit,
+  ) async {
+    if (event.repository.isFavorite) {
+      await reposRepository.deleteFavoriteItem(
+        RepositoryModelView.mapperToRepository(
+          event.repository,
+        ),
+      );
+    } else {
+      await reposRepository.addFavoriteItem(
+        RepositoryModelView.mapperToRepository(
+          event.repository,
+        ),
+      );
+    }
+
+    if (state.searchValue.isEmpty) {
+      add(
+        const HomeEvent.showSearchHistory(),
+      );
+    } else {
+      add(
+        HomeEvent.search(state.searchValue),
       );
     }
   }

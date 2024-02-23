@@ -63,8 +63,17 @@ class FavoriteListBloc extends Bloc<FavoriteListEvent, FavoriteListState> {
       );
     }
 
+    List<RepositoryModelView> newFavoriteRepositories = [];
+
+    for (var item in state.list) {
+      if (item.id != event.repository.id) {
+        newFavoriteRepositories.add(item);
+      }
+    }
+
     emit(
       state.copyWith(
+        list: newFavoriteRepositories,
         repository: event.repository,
       ),
     );

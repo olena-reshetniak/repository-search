@@ -123,11 +123,6 @@ class _FavoriteListViewState extends State<FavoriteListView> {
     BuildContext context,
     FavoriteListState state,
   ) {
-    if (state.repository != null) {
-      context
-          .read<FavoriteListBloc>()
-          .add(const FavoriteListEvent.getFavoriteList());
-    }
   }
 
   void _onCloseScreen() {

@@ -8,6 +8,7 @@ class HomeState with _$HomeState {
     @Default(false) bool isLoading,
     @Default([]) List<RepositoryModelView> searchHistory,
     @Default("") String searchValue,
+    RepositoryModelView? repository,
     @Default([]) List<RepositoryModelView> searchResult,
   }) = _HomeState;
 }
