@@ -26,7 +26,24 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Future<void> _onShowSearchHistory(
     _ShowSearchHistory event,
     Emitter<HomeState> emit,
-  ) async {}
+  ) async {
+    emit(state.copyWith(
+      isLoading: true,
+    ));
+
+    final result = await reposRepository.getSearchHistory();
+
+    result.fold((error) {
+      emit(state.copyWith(
+        isLoading: false,
+      ));
+    }, (repositories) {
+      emit(state.copyWith(
+        isLoading: false,
+        searchHistory: RepositoryModelView.mapperList(repositories),
+      ));
+    });
+  }
 
   Future<void> _onSearch(
     _Search event,
@@ -49,12 +66,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         emit(state.copyWith(
           isLoading: false,
         ));
-      }, (repos) {
+      }, (repositories) {
         emit(state.copyWith(
           isLoading: false,
-          searchResult: RepositoryModelView.mapperList(repos),
+          searchResult: RepositoryModelView.mapperList(repositories),
         ));
       });
+    } else {
+      add(
+        const HomeEvent.showSearchHistory(),
+      );
     }
   }
 }

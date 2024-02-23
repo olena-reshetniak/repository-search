@@ -30,11 +30,9 @@ class GitHubRepositoryApi {
           '/search/repositories',
           queryParameters: {
             'q': searchValue,
-            'per_page' : 16,
+            'per_page': 16,
           },
         );
-
-        response.data;
 
         return SearchRepositoriesResponse.fromJson(response.data);
       },

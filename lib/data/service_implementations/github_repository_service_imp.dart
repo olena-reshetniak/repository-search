@@ -1,15 +1,21 @@
+import 'dart:convert';
+
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:repository_search/data/api/github_repository_api.dart.dart';
+import 'package:repository_search/data/preferences/preferences.dart';
+import 'package:repository_search/data/response/search_repositories_response.dart';
 import 'package:repository_search/domain/entity/repository.dart';
 import 'package:repository_search/domain/services/github_repository_service.dart';
 
 @LazySingleton(as: GitHubRepositoryService)
 class GitHubRepositoryServiceImp extends GitHubRepositoryService {
   final GitHubRepositoryApi repoApiService;
+  final Preferences preferences;
 
   GitHubRepositoryServiceImp({
     required this.repoApiService,
+    required this.preferences,
   });
 
   @override
@@ -23,6 +29,8 @@ class GitHubRepositoryServiceImp extends GitHubRepositoryService {
         return Left(error);
       },
       (response) {
+        preferences.setSearchHistory(json.encode(response.toJson()));
+
         return Right(
           Repository.mapperFromSearchRepositoriesResponse(
             response,
@@ -34,8 +42,24 @@ class GitHubRepositoryServiceImp extends GitHubRepositoryService {
 
   @override
   Future<Either<Exception, List<Repository>>> getSearchHistory() async {
-    // TODO: implement getRepositoriesHistory
-    throw UnimplementedError();
+    try {
+      final result = await preferences.getSearchHistory();
+
+      if (result.isNotEmpty) {
+        final repositories =
+            SearchRepositoriesResponse.fromJson(json.decode(result));
+
+        return Right(
+          Repository.mapperFromSearchRepositoriesResponse(
+            repositories,
+          ),
+        );
+      } else {
+        return const Right([]);
+      }
+    } on Exception catch (exception) {
+      return Left(exception);
+    }
   }
 
   @override
